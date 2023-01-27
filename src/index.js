@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import DrawArea from "./components/DrawArea/DrawArea";
 import DrawControls from "./components/DrawControls/DrawControls";
+import Header from "./components/HomePage/Header";
+import AppRouter from "./components/router/AppRouter";
 
 import "./styles.css";
 
@@ -73,4 +75,4 @@ class App extends React.Component {
 }
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(<AppRouter />, rootElement);
