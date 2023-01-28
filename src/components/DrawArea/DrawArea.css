@@ -5,6 +5,7 @@
   margin-bottom: -5px;
   position: relative;
   cursor: none;
+  background-color: white;
 }
 
 .draw-canvas-brush--hidden {

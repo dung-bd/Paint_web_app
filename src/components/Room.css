@@ -1,0 +1,15 @@
+.room {
+    margin: 10px;
+    width: 288px;
+    overflow: hidden;
+  }
+  .room-title {
+    font-weight: bold;
+  }
+
+  .room-details {
+    margin-bottom: 1rem;
+  }
+  .room-details > div{
+    margin-bottom: 0.5rem;
+  }
