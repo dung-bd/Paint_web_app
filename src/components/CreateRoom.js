@@ -1,22 +1,57 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
+import { createRoom } from "../utils/request";
 
-import React, { useContext } from 'react';
-import RoomForm from './RoomForm';
-import RoomsContext from '../context/RoomsContext';
-import { useNavigate } from 'react-router-dom';
+const CreateRoom = () => {
+  const [errorMsg, setErrorMsg] = useState("");
+  const [name, setName] = useState("");
+  const [limit, setLimit] = useState(10);
 
-const CreateRoom = ({ history }) => {
-  const { rooms, setRooms } = useContext(RoomsContext);
   const navigate = useNavigate();
 
-  const handleOnSubmit = (room) => {
-    setRooms([room, ...rooms]);
-    navigate('/');
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!name || !limit) {
+      setErrorMsg("Please fill out all the fields");
+    } else {
+      await createRoom({ name, limit });
+      navigate("/");
+    }
   };
 
   return (
-    <React.Fragment>
-      <RoomForm handleOnSubmit={handleOnSubmit} />
-    </React.Fragment>
+    <div className="main-form">
+      {errorMsg && <p className="errorMsg">{errorMsg}</p>}
+      <Form onSubmit={handleOnSubmit}>
+        <Form.Group controlId="name">
+          <Form.Label>Room name</Form.Label>
+          <Form.Control
+            className="input-control"
+            type="text"
+            name="room"
+            value={name}
+            placeholder="Enter room name"
+            onChange={(e) => setName(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group controlId="limit">
+          <Form.Label>Student cap</Form.Label>
+          <Form.Control
+            className="input-control"
+            type="text"
+            name="limit"
+            value={limit}
+            placeholder="Enter maximum number of student"
+            onChange={(e) => setLimit(e.target.value)}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit" className="submit-btn">
+          Submit
+        </Button>
+      </Form>
+    </div>
   );
 };
 

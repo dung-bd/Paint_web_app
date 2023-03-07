@@ -1,7 +1,6 @@
 .draw-canvas {
   border: 1.5px solid black;
-  /* box-shadow: 5px 5px 4px 1px rgba(0, 0, 0, 0.3); */
-  /* border-radius: 5px; */
+  border-radius: 5px;
   margin-bottom: -5px;
   position: relative;
   cursor: none;
