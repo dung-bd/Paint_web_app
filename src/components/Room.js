@@ -1,29 +1,29 @@
-import React from 'react';
-import { Button, Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import "./Room.css"
+import React from "react";
+import { Button, Card } from "react-bootstrap";
+import "./Room.css";
 
 const Room = ({
-  id,
-  roomname,
-  roomAuthor,
-  time,
-  handleRemoveRoom
+  _id,
+  name,
+  limit,
+  participant,
+  status,
+  handleJoinRoom,
+  handleRemoveRoom,
 }) => {
-  const history = useNavigate();
-
   return (
-    <Card style={{ width: '18rem' }} className="room">
+    <Card style={{ width: "18rem" }} className="room">
       <Card.Body>
-        <Card.Title className="room-title">{roomname}</Card.Title>
+        <Card.Title className="room-title">{name}</Card.Title>
         <div className="room-details">
-          <div>Author: {roomAuthor}</div>
-          <div>Date: {new Date(time).toDateString()}</div>
+          {/* <div>Status: {status}</div> */}
+          <div>Current: {participant.length}</div>
+          <div>Limit: {limit}</div>
         </div>
-        <Button variant="primary" onClick={() => history(`/room/${id}`)}>
-          Enjoy
-        </Button>{' '}
-        <Button variant="danger" onClick={() => handleRemoveRoom(id)}>
+        <Button variant="primary" onClick={() => handleJoinRoom(_id)}>
+          Join
+        </Button>{" "}
+        <Button variant="danger" onClick={() => handleRemoveRoom(_id)}>
           Delete
         </Button>
       </Card.Body>
