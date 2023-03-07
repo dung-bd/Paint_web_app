@@ -1,7 +1,7 @@
 import axios from "axios";
 import { URL } from "./constants";
 
-export const axios = axios.create({
+export const axios1 = axios.create({
   baseURL: URL,
   transformResponse: () => {},
   headers: {

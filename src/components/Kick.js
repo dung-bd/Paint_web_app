@@ -3,6 +3,7 @@ import { Button, Card, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import "./Room.css"
 import Room from './Room';
+import { kickout } from '../utils/request';
 
 const Kick = ({
   id,
@@ -32,12 +33,16 @@ const Kick = ({
     setInputValue2(event.target.value);
   }
 
+  function handleClick(){
+     kickout();
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <input type="text" value={inputValue} onChange={handleChange} placeholder="Enter UserId" />
       <input type="text" value={inputValue1} onChange={handleChange1} placeholder="Enter username" />
       <input type="text" value={inputValue2} onChange={handleChange2} placeholder="Enter RoomId" />
-      <button type="submit">Kick</button>
+      <button type="submit" onClick={handleClick}>Kick</button>
     </form>
   );
 };

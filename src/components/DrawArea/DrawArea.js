@@ -9,6 +9,7 @@ import addNotification from 'react-push-notification';
 import toast, { Toaster } from 'react-hot-toast'
 //import { ToastContainer, toast } from 'react-toastify';
  // import 'react-toastify/dist/ReactToastify.css';
+ import { raiseHand } from "../../utils/request";
 
 class DrawArea extends React.Component {
   state = {
@@ -154,7 +155,9 @@ class DrawArea extends React.Component {
     this.raiseNotification();
   }
 
-  notify = () => toast.success('Raise');
+  notify = () => {toast.success('Raise');
+raiseHand();
+}
 
   render() {
     return (
