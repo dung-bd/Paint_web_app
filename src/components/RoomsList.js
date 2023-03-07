@@ -3,6 +3,7 @@ import _ from 'lodash'
 import Room from './Room'
 import RoomsContext from "../context/RoomsContext"
 import "./RoomsList.css"
+import Header from "./HomePage/Header"
 
 const RoomsList = () =>{
     const {rooms, setRooms} = useContext(RoomsContext);
@@ -13,6 +14,7 @@ const RoomsList = () =>{
 
     return(
         <React.Fragment>
+            <Header />
             <div className="room-list">
                 {!_.isEmpty(rooms) ? (
                     rooms.map((room)=>(

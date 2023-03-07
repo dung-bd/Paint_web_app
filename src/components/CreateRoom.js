@@ -10,7 +10,7 @@ const CreateRoom = ({ history }) => {
 
   const handleOnSubmit = (room) => {
     setRooms([room, ...rooms]);
-    navigate('/');
+    navigate('/list');
   };
 
   return (

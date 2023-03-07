@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import DrawArea from "./components/DrawArea/DrawArea";
 import DrawControls from "./components/DrawControls/DrawControls";
 import Header from "./components/HomePage/Header";
+import Kick from "./components/Kick";
 import AppRouter from "./components/router/AppRouter";
 
 import "./styles.css";
@@ -54,6 +55,8 @@ class App extends React.Component {
     const { canvasWidth, canvasHeight, lineColor, lineWidth } = this.state;
     return (
       <div className="App">
+
+        <Header />
         <div className="App-content" style={{ width: canvasWidth }}>
           <DrawArea
             width={canvasWidth}
@@ -68,6 +71,7 @@ class App extends React.Component {
             onColorChange={this.changeLineColor}
             onLineWidthChange={this.changeLineWidth}
           />
+          <Kick />
         </div>
       </div>
     );
