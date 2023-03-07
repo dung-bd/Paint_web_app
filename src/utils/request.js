@@ -1,18 +1,44 @@
-import { axios1 } from "./axios";
+import { URL, HEADER } from "./constants";
 
 // GET
-export const getRooms = () => axios1.get("room");
-export const getRoomInfo = (roomId) => axios1.get(`room/${roomId}`);
+export const getRooms = () =>
+  fetch(`${URL}/room`, {
+    method: "GET",
+    headers: HEADER,
+  }).then((res) => res.json());
+export const getRoom = (roomId) => fetch(`${URL}/room/${roomId}`, {
+  method: "GET",
+  headers: HEADER,
+}).then((res) => res.json());
 
 // POST
-export const createRoom = (payload) => axios1.post("room", payload);
-export const joinRoom = (payload) => axios1.post("join", payload);
-export const kickout = (payload) => axios1.post("kick", payload);
-export const raiseHand = (payload) => axios1.post("raise-hand", payload);
-export const acceptHand = (payload) => axios1.post("pick", payload);
+export const createRoom = (payload) =>
+  fetch(`${URL}/room`, {
+    method: "POST",
+    headers: HEADER,
+    body: JSON.stringify(payload),
+  }).then((res) => res.json());
+export const joinRoom = (roomId) =>
+  fetch(`${URL}/room/join/${roomId}`, {
+    method: "POST",
+    headers: HEADER,
+  }).then((res) => res.json());
+export const draw = (roomId, payload) =>
+  fetch(`${URL}/room/draw/${roomId}`, {
+    method: "POST",
+    headers: HEADER,
+    body: JSON.stringify(payload),
+  }).then((res) => res.json());
+// export const kickout = (payload) => axios.post("kick", payload);
+// export const raiseHand = (payload) => axios.post("raise-hand", payload);
+// export const acceptHand = (payload) => axios.post("pick", payload);
 
-// PUT
-export const updateRoom = (roomId, payload) => axios1.put(`room/${roomId}`, payload);    // ko có body để update room?
+// // PUT
+// export const updateRoom = (roomId, payload) => axios.put(`room/${roomId}`, payload);    // ko có body để update room?
 
 // DELETE
-export const deleteRoom = (roomId) => axios1.delete("room");     // ko cần roomId?
+export const deleteRoom = (roomId) =>
+  fetch(`${URL}/room/${roomId}`, {
+    method: "DELETE",
+    headers: HEADER,
+  }).then((res) => res.json());

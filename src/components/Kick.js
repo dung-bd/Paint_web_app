@@ -3,7 +3,6 @@ import { Button, Card, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import "./Room.css"
 import Room from './Room';
-import { kickout } from '../utils/request';
 
 const Kick = ({
   id,
@@ -34,7 +33,7 @@ const Kick = ({
   }
 
   function handleClick(){
-     kickout();
+     
   }
 
   return (

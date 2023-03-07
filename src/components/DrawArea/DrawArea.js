@@ -9,13 +9,13 @@ import addNotification from 'react-push-notification';
 import toast, { Toaster } from 'react-hot-toast'
 //import { ToastContainer, toast } from 'react-toastify';
  // import 'react-toastify/dist/ReactToastify.css';
- import { raiseHand } from "../../utils/request";
+ //import { raiseHand } from "../../utils/request";
 
 class DrawArea extends React.Component {
   state = {
     currX: 0,
     currY: 0,
-    brushHidden: true
+    brushHidden: true,
   };
 
   destroy$ = new Subject();
@@ -37,6 +37,9 @@ class DrawArea extends React.Component {
     if (this.props.lineWidth !== prevProps.lineWidth) {
       this.context.lineWidth = this.props.lineWidth;
     }
+    if (this.props.mqttValue !== prevProps.mqttValue) {
+      this.reDrawCoor(this.props.mqttValue);
+    }
   }
 
   componentWillUnmount() {
@@ -51,7 +54,7 @@ class DrawArea extends React.Component {
     const mouseDown$ = fromEvent(this.canvasEl, "mousedown");
     const mouseUp$ = fromEvent(document, "mouseup");
     const mouseMove$ = fromEvent(document, "mousemove");
-    const mouseClick$ = fromEvent(this.canvasEl, "click");
+    // const mouseClick$ = fromEvent(this.canvasEl, "click");
     const mouseDrag$ = mouseDown$.pipe(
       tap((e) => {
         this.currX = e.clientX - this.canvasEl.offsetLeft;
@@ -76,7 +79,7 @@ class DrawArea extends React.Component {
     mouseMove$.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       this.setState({
         currX: e.clientX,
-        currY: e.clientY
+        currY: e.clientY,
       });
     });
 
@@ -102,11 +105,23 @@ class DrawArea extends React.Component {
     const ctx = this.context;
     const strDataURI = this.canvasEl.toDataURL();
     const img = new Image();
-    console.log(1);
     img.onload = function () {
       ctx.drawImage(img, 0, 0);
     };
     img.src = strDataURI;
+  }
+
+  reDrawCoor() {
+    if (this.props.mqttValue) {
+      const ctx = this.context;
+      this.props.mqttValue.forEach(({ prevX, prevY, currX, currY }) => {
+        ctx.beginPath();
+        ctx.moveTo(prevX, prevY);
+        ctx.lineTo(currX, currY);
+        ctx.stroke();
+        ctx.closePath();
+      });
+    }
   }
 
   setCoords(e) {
@@ -123,18 +138,26 @@ class DrawArea extends React.Component {
     ctx.lineTo(this.currX, this.currY);
     ctx.stroke();
     ctx.closePath();
-    console.log("here");
+    this.props.setPayload((payload) => [
+      ...payload,
+      {
+        prevX: this.prevX,
+        prevY: this.prevY,
+        currX: this.currX,
+        currY: this.currY,
+      },
+    ]);
   }
 
   handleMouseOut = () => {
     this.setState({
-      brushHidden: true
+      brushHidden: true,
     });
   };
 
   handleMouseIn = () => {
     this.setState({
-      brushHidden: false
+      brushHidden: false,
     });
   };
 
@@ -156,7 +179,7 @@ class DrawArea extends React.Component {
   }
 
   notify = () => {toast.success('Raise');
-raiseHand();
+//raiseHand();
 }
 
   render() {
@@ -181,13 +204,7 @@ raiseHand();
             this.state.brushHidden ? "draw-canvas-brush--hidden" : undefined
           }
         />
-        <div>
-        <button type="submit" onClick={this.notify}>
-      Raise
-    </button>
-     <Toaster position="top-right"
-  reverseOrder={false}/>
-    </div>
+        
       </div>
     );
   }
