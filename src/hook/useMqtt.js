@@ -25,14 +25,7 @@ export const useMqtt = (roomId) => {
             [EMQTTEvent.DRAW + roomId]: JSON.parse(message.toString())["data"],
           }));
           break;
-        case EMQTTEvent.RAISE_HAND + roomId:
-          setPayload((val) => ({
-            ...val,
-            [EMQTTEvent.RAISE_HAND + roomId]: JSON.parse(message.toString())[
-              "data"
-            ],
-          }));
-          break;
+        
       }
     });
   }, [roomId]);
