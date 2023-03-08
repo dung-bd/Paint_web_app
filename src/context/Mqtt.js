@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "mqtt";
 import { MQTT_URI } from "../utils/constants";
 
-export const ClientContext = React.createContext();
+export const MqttContext = React.createContext();
 
-export const ClientProvider = ({ children }) => {
+export const MqttProvider = ({ children }) => {
   const client = useMemo(
     () =>
       connect(MQTT_URI, {
@@ -29,11 +29,9 @@ export const ClientProvider = ({ children }) => {
     return () => client.end();
   }, []);
 
-  if (loading) return "Loading...";
+  if (loading) return <React.Fragment />;
 
   return (
-    <ClientContext.Provider value={{ client }}>
-      {children}
-    </ClientContext.Provider>
+    <MqttContext.Provider value={{ client }}>{children}</MqttContext.Provider>
   );
 };

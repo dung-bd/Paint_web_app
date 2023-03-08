@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 
 import DrawArea from "./components/DrawArea/DrawArea";
 import DrawControls from "./components/DrawControls/DrawControls";
-import Header from "./components/HomePage/Header";
 import Kick from "./components/Kick";
 import AppRouter from "./components/router/AppRouter";
 import { draw, getRoom } from "./utils/request";
@@ -79,7 +78,6 @@ const App = () => {
 
   return (
     <div className="App">
-      <Header />
       <div className="App-content" style={{ width: canvasWidth }}>
         <DrawArea
           width={canvasWidth}
