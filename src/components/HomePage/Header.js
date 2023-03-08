@@ -8,7 +8,7 @@ const Header = () =>{
             <h1>Paint Stream IOT App</h1>
             <hr />
             <div className="links">
-                <NavLink to="/list" className="link" activeClassName="active" exact>
+                <NavLink to="/" className="link" activeClassName="active" exact>
                     Room List
                 </NavLink>
                 <NavLink to="/add" className="link" activeClassName="active">

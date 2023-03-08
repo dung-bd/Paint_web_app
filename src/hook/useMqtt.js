@@ -1,10 +1,9 @@
-import { connect } from "mqtt";
 import React, { useContext, useEffect, useState } from "react";
-import { ClientContext } from "../context/Client";
+import { MqttContext } from "../context/Mqtt";
 import { EMQTTEvent } from "../utils/constants";
 
 export const useMqtt = (roomId) => {
-  const { client } = useContext(ClientContext);
+  const { client } = useContext(MqttContext);
   const [payload, setPayload] = useState({});
 
   useEffect(() => {
@@ -18,9 +17,9 @@ export const useMqtt = (roomId) => {
     );
 
     client.subscribe(EMQTTEvent.RAISE_HAND + roomId, (err) => {
-      if(err) console.error(err);
+      if (err) console.error(err);
       else console.log(`Subcribed to ${EMQTTEvent.RAISE_HAND + roomId}`);
-    })
+    });
 
     return () => {
       client.end();
