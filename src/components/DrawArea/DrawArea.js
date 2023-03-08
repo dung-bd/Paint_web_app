@@ -41,9 +41,13 @@ class DrawArea extends React.Component {
     if (this.props.mqttValue !== prevProps.mqttValue) {
       // sync draw
       {
-        const { from, line, lineWidth, lineColor, roomId } =
-          this.props.mqttValue[EMQTTEvent.DRAW + this.props.roomId];
-        if (from !== this.props.userId) this.reDrawCoor(line);
+        const data = this.props.mqttValue[EMQTTEvent.DRAW + this.props.roomId];
+        // const { from, line, lineWidth, lineColor, roomId } =
+        if (data.from !== this.props.userId) {
+          this.context.strokeStyle = data.lineColor || this.props.lineColor;
+          this.context.lineWidth = data.lineWidth || this.props.lineWidth;
+          this.reDrawCoor(data.line);
+        }
       }
 
       // sync raise hand
@@ -156,10 +160,10 @@ class DrawArea extends React.Component {
     img.src = strDataURI;
   }
 
-  reDrawCoor() {
-    if (this.props.mqttValue) {
+  reDrawCoor(line) {
+    if (line) {
       const ctx = this.context;
-      this.props.mqttValue.forEach(({ prevX, prevY, currX, currY }) => {
+      line.forEach(({ prevX, prevY, currX, currY }) => {
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);
         ctx.lineTo(currX, currY);

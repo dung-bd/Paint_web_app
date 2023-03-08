@@ -29,14 +29,8 @@ const App = () => {
 
   useEffect(() => {
     setDimensions();
-    console.log(userInfo);
     // getRoomInfo();
   }, []);
-
-  // Receive
-  // useEffect(() => {
-  //   if (mqttValue) console.log(mqttValue);
-  // }, [mqttValue]);
 
   const setDimensions = () => {
     setCanvasWidth(window.innerWidth / 1.2);
