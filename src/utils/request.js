@@ -53,7 +53,7 @@ export const createRoom = (payload) =>
 export const joinRoom = (roomId) =>
   fetch(`${URL}/room/join/${roomId}`, option("POST")).then((res) => res.json());
 
-export const draw = (roomId, payload) =>
+export const drawCanvas = (roomId, payload) =>
   fetch(`${URL}/room/draw/${roomId}`, option("POST", payload)).then((res) =>
     res.json()
   );

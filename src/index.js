@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useParams } from "react-router-dom";
 
@@ -6,56 +6,47 @@ import DrawArea from "./components/DrawArea/DrawArea";
 import DrawControls from "./components/DrawControls/DrawControls";
 import Kick from "./components/Kick";
 import AppRouter from "./components/router/AppRouter";
-import { draw, getRoom } from "./utils/request";
+import { getRoom } from "./utils/request";
 import { useMqtt } from "./hook/useMqtt";
-import addNotification from 'react-push-notification';
-import toast, { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from "react-hot-toast";
 
 import "./styles.css";
 import { EMQTTEvent } from "./utils/constants";
+import { UserContext } from "./context/User";
 
 const App = () => {
-  const [roomInfo, setRoomInfo] = useState();
+  // const [roomInfo, setRoomInfo] = useState();
   const [canvasWidth, setCanvasWidth] = useState(0);
   const [canvasHeight, setCanvasHeight] = useState(0);
   const [lineColor, setLineColor] = useState("rgba(144, 145, 154, 1)");
   const [lineWidth, setLineWidth] = useState(4);
-  const [payload, setPayload] = useState([]);
 
   const { id } = useParams();
 
-  const mqttValue = useMqtt(id);
+  const { userInfo } = useContext(UserContext);
 
-  // mqtt
-  // useSubscribe(id);
+  const mqttValue = useMqtt(id);
 
   useEffect(() => {
     setDimensions();
-    getRoomInfo();
+    console.log(userInfo);
+    // getRoomInfo();
   }, []);
 
-  // Send
-  useEffect(() => {
-    if (payload.length === 100) {
-      draw(id, { line: payload });
-      setPayload(() => []);
-    }
-  }, [payload]);
-
   // Receive
-  useEffect(() => {
-    if (mqttValue) console.log(mqttValue);
-  }, [mqttValue]);
+  // useEffect(() => {
+  //   if (mqttValue) console.log(mqttValue);
+  // }, [mqttValue]);
 
   const setDimensions = () => {
     setCanvasWidth(window.innerWidth / 1.2);
     setCanvasHeight(window.innerHeight / 1.4);
   };
 
-  const getRoomInfo = async () => {
-    const res = await getRoom(id);
-    setRoomInfo(() => res);
-  };
+  // const getRoomInfo = async () => {
+  //   const res = await getRoom(id);
+  //   setRoomInfo(() => res);
+  // };
 
   useEffect(() => {
     const canvas = document.getElementById("draw-canvas");
@@ -74,7 +65,9 @@ const App = () => {
     setLineWidth(event.target.value);
   };
 
- const notify = () => {toast.success('Raise')};
+  const notify = () => {
+    toast.success("Raise");
+  };
 
   return (
     <div className="App">
@@ -84,12 +77,14 @@ const App = () => {
           height={canvasHeight}
           lineColor={lineColor}
           lineWidth={lineWidth}
-          mqttValue={
-            mqttValue[EMQTTEvent.DRAW + id]
-              ? mqttValue[EMQTTEvent.DRAW + id].data.line
-              : undefined
-          }
-          setPayload={setPayload}
+          // mqttValue={
+          //   mqttValue[EMQTTEvent.DRAW + id]
+          //     ? mqttValue[EMQTTEvent.DRAW + id]
+          //     : undefined
+          // }
+          mqttValue={mqttValue}
+          roomId={id}
+          userId={userInfo._id}
           onResize={setDimensions}
         />
         <DrawControls
@@ -100,12 +95,19 @@ const App = () => {
         />
       </div>
       <div>
-        <button type="submit" onClick={notify} mqttValue={mqttValue[EMQTTEvent.RAISE_HAND + id] ? mqttValue[EMQTTEvent.RAISE_HAND + id].data.line : undefined}>
-      Raise
-    </button>
-     <Toaster position="top-right"
-  reverseOrder={false}/>
-    </div>
+        <button
+          type="submit"
+          onClick={notify}
+          // mqttValue={
+          //   mqttValue[EMQTTEvent.RAISE_HAND + id]
+          //     ? mqttValue[EMQTTEvent.RAISE_HAND + id].data.line
+          //     : undefined
+          // }
+        >
+          Raise
+        </button>
+        <Toaster position="top-right" reverseOrder={false} />
+      </div>
       {/* <Kick /> */}
     </div>
   );
