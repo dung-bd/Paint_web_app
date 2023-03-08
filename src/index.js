@@ -4,9 +4,13 @@ import { useParams } from "react-router-dom";
 
 import DrawArea from "./components/DrawArea/DrawArea";
 import DrawControls from "./components/DrawControls/DrawControls";
+import Header from "./components/HomePage/Header";
+import Kick from "./components/Kick";
 import AppRouter from "./components/router/AppRouter";
 import { draw, getRoom } from "./utils/request";
 import { useMqtt } from "./hook/useMqtt";
+import addNotification from 'react-push-notification';
+import toast, { Toaster } from 'react-hot-toast'
 
 import "./styles.css";
 import { EMQTTEvent } from "./utils/constants";
@@ -71,8 +75,11 @@ const App = () => {
     setLineWidth(event.target.value);
   };
 
+ const notify = () => {toast.success('Raise')};
+
   return (
     <div className="App">
+      <Header />
       <div className="App-content" style={{ width: canvasWidth }}>
         <DrawArea
           width={canvasWidth}
@@ -94,6 +101,14 @@ const App = () => {
           onLineWidthChange={changeLineWidth}
         />
       </div>
+      <div>
+        <button type="submit" onClick={notify} mqttValue={mqttValue[EMQTTEvent.RAISE_HAND + id] ? mqttValue[EMQTTEvent.RAISE_HAND + id].data.line : undefined}>
+      Raise
+    </button>
+     <Toaster position="top-right"
+  reverseOrder={false}/>
+    </div>
+      {/* <Kick /> */}
     </div>
   );
 };

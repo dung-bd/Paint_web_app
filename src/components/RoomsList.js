@@ -4,6 +4,7 @@ import Room from "./Room";
 import "./RoomsList.css";
 import { deleteRoom, getRooms, joinRoom } from "../utils/request";
 import { useNavigate } from "react-router-dom";
+import Header from "./HomePage/Header";
 
 const RoomsList = () => {
   const [room, setRoom] = useState();
@@ -31,6 +32,7 @@ const RoomsList = () => {
 
   return (
     <React.Fragment>
+        <Header />
       <div className="room-list">
         {!_.isEmpty(room) ? (
           room.map((item) => (

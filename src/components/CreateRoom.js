@@ -17,7 +17,7 @@ const CreateRoom = () => {
       setErrorMsg("Please fill out all the fields");
     } else {
       await createRoom({ name, limit });
-      navigate("/");
+      navigate("/list");
     }
   };
 

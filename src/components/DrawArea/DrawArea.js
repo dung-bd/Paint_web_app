@@ -3,6 +3,13 @@ import "./DrawArea.css";
 import { fromEvent, Subject } from "rxjs";
 import { mergeMap, takeUntil, tap } from "rxjs/operators";
 import Brush from "../Brush";
+import RaiseHandButton from "../RaiseHandButton";
+import { Notifications } from 'react-push-notification';
+import addNotification from 'react-push-notification';
+import toast, { Toaster } from 'react-hot-toast'
+//import { ToastContainer, toast } from 'react-toastify';
+ // import 'react-toastify/dist/ReactToastify.css';
+ //import { raiseHand } from "../../utils/request";
 
 class DrawArea extends React.Component {
   state = {
@@ -154,6 +161,27 @@ class DrawArea extends React.Component {
     });
   };
 
+  raiseNotification = () =>{
+    addNotification({
+      title: 'Raised',
+      subtitle: 'Raised',
+      message: 'Raised',
+      theme: 'light',
+      closeButton:"X",
+      backgroundTop:"green",
+      backgroundBottom:"yellowgreen"
+    })
+  }
+
+  handleSubmit(e){
+    e.preventDefault();
+    this.raiseNotification();
+  }
+
+  notify = () => {toast.success('Raise');
+//raiseHand();
+}
+
   render() {
     return (
       <div>
@@ -176,6 +204,7 @@ class DrawArea extends React.Component {
             this.state.brushHidden ? "draw-canvas-brush--hidden" : undefined
           }
         />
+        
       </div>
     );
   }
