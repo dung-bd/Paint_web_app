@@ -1,15 +1,16 @@
 import React from "react";
-import "./DrawArea.css";
 import { fromEvent, Subject } from "rxjs";
 import { mergeMap, takeUntil, tap } from "rxjs/operators";
-import Brush from "../Brush";
+import { Notifications } from "react-push-notification";
+import addNotification from "react-push-notification";
+import toast from "react-hot-toast";
+
 import RaiseHandButton from "../RaiseHandButton";
-import { Notifications } from 'react-push-notification';
-import addNotification from 'react-push-notification';
-import toast, { Toaster } from 'react-hot-toast'
-//import { ToastContainer, toast } from 'react-toastify';
- // import 'react-toastify/dist/ReactToastify.css';
- //import { raiseHand } from "../../utils/request";
+import Brush from "../Brush";
+import { drawCanvas } from "../../utils/request";
+import { EMQTTEvent } from "../../utils/constants";
+
+import "./DrawArea.css";
 
 class DrawArea extends React.Component {
   state = {
@@ -38,7 +39,22 @@ class DrawArea extends React.Component {
       this.context.lineWidth = this.props.lineWidth;
     }
     if (this.props.mqttValue !== prevProps.mqttValue) {
-      this.reDrawCoor(this.props.mqttValue);
+      // sync draw
+      {
+        const data = this.props.mqttValue[EMQTTEvent.DRAW + this.props.roomId];
+        // const { from, line, lineWidth, lineColor, roomId } =
+        if (data.from !== this.props.userId) {
+          this.context.strokeStyle = data.lineColor || this.props.lineColor;
+          this.context.lineWidth = data.lineWidth || this.props.lineWidth;
+          this.reDrawCoor(data.line);
+        }
+      }
+
+      // sync raise hand
+
+      // console.log(this.props.mqttValue);
+      // sync from others
+      // this.reDrawCoor(this.props.mqttValue);
     }
   }
 
@@ -83,10 +99,43 @@ class DrawArea extends React.Component {
       });
     });
 
-    mouseDrag$.pipe(takeUntil(this.destroy$)).subscribe((e) => {
-      this.setCoords(e);
-      this.draw();
-    });
+    const drawHandler = () => {
+      const line = [];
+      let interval;
+
+      return (e) => {
+        this.setCoords(e);
+        this.draw();
+        clearTimeout(interval);
+        line.push({
+          prevX: this.prevX,
+          prevY: this.prevY,
+          currX: this.currX,
+          currY: this.currY,
+        });
+
+        if (line.length === 100) {
+          drawCanvas(this.props.roomId, {
+            line,
+            lineWidth: this.props.lineWidth,
+            lineColor: this.props.lineColor,
+          });
+          line.length = 0;
+        } else {
+          interval = setTimeout(() => {
+            drawCanvas(this.props.roomId, {
+              line,
+              lineWidth: this.props.lineWidth,
+              lineColor: this.props.lineColor,
+            });
+            line.length = 0;
+          }, 500);
+        }
+      };
+    };
+    mouseDrag$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(drawHandler().bind(this));
 
     touchMove$.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       this.setCoords(e.changedTouches[0]);
@@ -111,10 +160,10 @@ class DrawArea extends React.Component {
     img.src = strDataURI;
   }
 
-  reDrawCoor() {
-    if (this.props.mqttValue) {
+  reDrawCoor(line) {
+    if (line) {
       const ctx = this.context;
-      this.props.mqttValue.forEach(({ prevX, prevY, currX, currY }) => {
+      line.forEach(({ prevX, prevY, currX, currY }) => {
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);
         ctx.lineTo(currX, currY);
@@ -138,15 +187,15 @@ class DrawArea extends React.Component {
     ctx.lineTo(this.currX, this.currY);
     ctx.stroke();
     ctx.closePath();
-    this.props.setPayload((payload) => [
-      ...payload,
-      {
-        prevX: this.prevX,
-        prevY: this.prevY,
-        currX: this.currX,
-        currY: this.currY,
-      },
-    ]);
+    // this.props.setPayload((payload) => [
+    //   ...payload,
+    //   {
+    //     prevX: this.prevX,
+    //     prevY: this.prevY,
+    //     currX: this.currX,
+    //     currY: this.currY,
+    //   },
+    // ]);
   }
 
   handleMouseOut = () => {
@@ -161,26 +210,27 @@ class DrawArea extends React.Component {
     });
   };
 
-  raiseNotification = () =>{
+  raiseNotification = () => {
     addNotification({
-      title: 'Raised',
-      subtitle: 'Raised',
-      message: 'Raised',
-      theme: 'light',
-      closeButton:"X",
-      backgroundTop:"green",
-      backgroundBottom:"yellowgreen"
-    })
-  }
+      title: "Raised",
+      subtitle: "Raised",
+      message: "Raised",
+      theme: "light",
+      closeButton: "X",
+      backgroundTop: "green",
+      backgroundBottom: "yellowgreen",
+    });
+  };
 
-  handleSubmit(e){
+  handleSubmit(e) {
     e.preventDefault();
     this.raiseNotification();
   }
 
-  notify = () => {toast.success('Raise');
-//raiseHand();
-}
+  notify = () => {
+    toast.success("Raise");
+    //raiseHand();
+  };
 
   render() {
     return (
@@ -204,7 +254,6 @@ class DrawArea extends React.Component {
             this.state.brushHidden ? "draw-canvas-brush--hidden" : undefined
           }
         />
-        
       </div>
     );
   }

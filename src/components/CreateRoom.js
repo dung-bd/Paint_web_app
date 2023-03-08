@@ -16,8 +16,8 @@ const CreateRoom = () => {
     if (!name || !limit) {
       setErrorMsg("Please fill out all the fields");
     } else {
-      await createRoom({ name, limit });
-      navigate("/list");
+      const { data } = await createRoom({ name, limit });
+      navigate(`/room/${data._id}`);
     }
   };
 
