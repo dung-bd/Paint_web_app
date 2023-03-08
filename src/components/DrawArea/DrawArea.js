@@ -210,28 +210,6 @@ class DrawArea extends React.Component {
     });
   };
 
-  raiseNotification = () => {
-    addNotification({
-      title: "Raised",
-      subtitle: "Raised",
-      message: "Raised",
-      theme: "light",
-      closeButton: "X",
-      backgroundTop: "green",
-      backgroundBottom: "yellowgreen",
-    });
-  };
-
-  handleSubmit(e) {
-    e.preventDefault();
-    this.raiseNotification();
-  }
-
-  notify = () => {
-    toast.success("Raise");
-    //raiseHand();
-  };
-
   render() {
     return (
       <div>

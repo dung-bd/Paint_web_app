@@ -68,7 +68,12 @@ export const register = (payload) =>
     res.json()
   );
 // export const kickout = (payload) => axios.post("kick", payload);
-// export const raiseHand = (payload) => axios.post("raise-hand", payload);
+export const kickUser = (roomId, userId) => {
+  return fetch(`${URL}/room/kick/${roomId}`, option("POST", { userId })).then((res) => res.json());
+}
+export const allowUserWrite = (roomId, userId) => {
+  return fetch(`${URL}/room/allow-write/${roomId}`, option("POST", { userId })).then((res) => res.json());
+}
 // export const acceptHand = (payload) => axios.post("pick", payload);
 
 /* ----- PUT ----- */

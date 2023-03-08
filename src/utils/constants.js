@@ -14,7 +14,8 @@ export const EMQTTEvent = {
   DELETE_ROOM: PREFIX + "delete_room",
 
   DRAW: PREFIX + "room/draw/", // users
-
+  CHOOSEN:PREFIX+'room/choosen/',
+  
   JOIN_ROOM: PREFIX + "participant/join/",
   EXIT_ROOM: PREFIX + "participant/exit/",
 

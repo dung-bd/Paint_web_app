@@ -13,6 +13,7 @@ import toast, { Toaster } from "react-hot-toast";
 import "./styles.css";
 import { EMQTTEvent } from "./utils/constants";
 import { UserContext } from "./context/User";
+import UserList from "./components/UserList/index";
 
 const App = () => {
   // const [roomInfo, setRoomInfo] = useState();
@@ -89,7 +90,7 @@ const App = () => {
         />
       </div>
       <div>
-        <button
+        {/* <button
           type="submit"
           onClick={notify}
           // mqttValue={
@@ -99,10 +100,11 @@ const App = () => {
           // }
         >
           Raise
-        </button>
+        </button> */}
         <Toaster position="top-right" reverseOrder={false} />
       </div>
       {/* <Kick /> */}
+      <UserList roomId={id}/>
     </div>
   );
 };
