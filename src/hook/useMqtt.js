@@ -16,6 +16,10 @@ export const useMqtt = (roomId) => {
       if (err) console.error(err);
       else console.log(`Subcribed to ${EMQTTEvent.RAISE_HAND + roomId}`);
     });
+    client.subscribe(EMQTTEvent.EMPTY_BOARD + roomId, (err) => {
+      if (err) console.error(err);
+      else console.log(`Subcribed to ${EMQTTEvent.EMPTY_BOARD + roomId}`);
+    });
 
     client.on("message", (topic, message) => {
       switch (topic) {
@@ -25,7 +29,14 @@ export const useMqtt = (roomId) => {
             [EMQTTEvent.DRAW + roomId]: JSON.parse(message.toString())["data"],
           }));
           break;
-        
+        case EMQTTEvent.EMPTY_BOARD + roomId:
+          {
+            console.log(topic,message);
+            const canvas = document.getElementById("draw-canvas");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            break;
+          }
       }
     });
   }, [roomId]);
