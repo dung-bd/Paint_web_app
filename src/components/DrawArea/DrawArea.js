@@ -42,19 +42,21 @@ class DrawArea extends React.Component {
       // sync draw
       {
         const data = this.props.mqttValue[EMQTTEvent.DRAW + this.props.roomId];
-        // const { from, line, lineWidth, lineColor, roomId } =
-        if (data.from !== this.props.userId) {
+        if (data && data.from !== this.props.userId) {
           this.context.strokeStyle = data.lineColor || this.props.lineColor;
           this.context.lineWidth = data.lineWidth || this.props.lineWidth;
           this.reDrawCoor(data.line);
         }
       }
-      
-      // sync raise hand
 
-      // console.log(this.props.mqttValue);
-      // sync from others
-      // this.reDrawCoor(this.props.mqttValue);
+      // sync allow draw
+      // {
+      //   const data =
+      //     this.props.mqttValue[EMQTTEvent.CHOOSEN + this.props.roomId];
+      //   if (data) {
+      //     this.props.setAllowDraw((val) => [...val, data.userId]);
+      //   }
+      // }
     }
   }
 

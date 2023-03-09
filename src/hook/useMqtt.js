@@ -23,20 +23,28 @@ export const useMqtt = (roomId) => {
 
     client.on("message", (topic, message) => {
       switch (topic) {
-        case EMQTTEvent.DRAW + roomId:
+        case EMQTTEvent.DRAW + roomId: {
           setPayload((val) => ({
             ...val,
             [EMQTTEvent.DRAW + roomId]: JSON.parse(message.toString())["data"],
           }));
           break;
-        case EMQTTEvent.EMPTY_BOARD + roomId:
-          {
-            console.log(topic,message);
-            const canvas = document.getElementById("draw-canvas");
-            const ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            break;
-          }
+        }
+        case EMQTTEvent.EMPTY_BOARD + roomId: {
+          console.log(topic, message);
+          const canvas = document.getElementById("draw-canvas");
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          break;
+        }
+        case EMQTTEvent.CHOOSEN + roomId: {
+          setPayload((val) => ({
+            ...val,
+            [EMQTTEvent.CHOOSEN + roomId]: JSON.parse(message.toString())[
+              "data"
+            ],
+          }));
+        }
       }
     });
   }, [roomId]);

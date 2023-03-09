@@ -4,23 +4,22 @@ import { useParams } from "react-router-dom";
 
 import DrawArea from "./components/DrawArea/DrawArea";
 import DrawControls from "./components/DrawControls/DrawControls";
-import Kick from "./components/Kick";
 import AppRouter from "./components/router/AppRouter";
-import { getRoom } from "./utils/request";
-import { useMqtt } from "./hook/useMqtt";
-import toast, { Toaster } from "react-hot-toast";
-
-import "./styles.css";
-import { EMQTTEvent } from "./utils/constants";
-import { UserContext } from "./context/User";
 import UserList from "./components/UserList/index";
 
+import { UserContext } from "./context/User";
+import { getRoom } from "./utils/request";
+import { useMqtt } from "./hook/useMqtt";
+
+import "./styles.css";
+
 const App = () => {
-  // const [roomInfo, setRoomInfo] = useState();
+  const [roomInfo, setRoomInfo] = useState({});
   const [canvasWidth, setCanvasWidth] = useState(0);
   const [canvasHeight, setCanvasHeight] = useState(0);
   const [lineColor, setLineColor] = useState("rgba(144, 145, 154, 1)");
   const [lineWidth, setLineWidth] = useState(4);
+  const [allowDraw, setAllowDraw] = useState([]);
 
   const { id } = useParams();
 
@@ -30,7 +29,7 @@ const App = () => {
 
   useEffect(() => {
     setDimensions();
-    // getRoomInfo();
+    getRoomInfo();
   }, []);
 
   const setDimensions = () => {
@@ -38,10 +37,11 @@ const App = () => {
     setCanvasHeight(window.innerHeight / 1.4);
   };
 
-  // const getRoomInfo = async () => {
-  //   const res = await getRoom(id);
-  //   setRoomInfo(() => res);
-  // };
+  const getRoomInfo = async () => {
+    const { data } = await getRoom(id);
+    setAllowDraw((val) => [...val, data.admin]);
+    setRoomInfo(() => ({ ...data }));
+  };
 
   useEffect(() => {
     const canvas = document.getElementById("draw-canvas");
@@ -52,16 +52,13 @@ const App = () => {
 
   const changeLineColor = (color) => {
     setLineColor(
-      `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`
+      () =>
+        `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`
     );
   };
 
   const changeLineWidth = (event) => {
-    setLineWidth(event.target.value);
-  };
-
-  const notify = () => {
-    toast.success("Raise");
+    setLineWidth(() => event.target.value);
   };
 
   return (
@@ -72,12 +69,9 @@ const App = () => {
           height={canvasHeight}
           lineColor={lineColor}
           lineWidth={lineWidth}
-          // mqttValue={
-          //   mqttValue[EMQTTEvent.DRAW + id]
-          //     ? mqttValue[EMQTTEvent.DRAW + id]
-          //     : undefined
-          // }
           mqttValue={mqttValue}
+          allowDraw={allowDraw}
+          setAllowDraw={setAllowDraw}
           roomId={id}
           userId={userInfo._id}
           onResize={setDimensions}
@@ -90,22 +84,7 @@ const App = () => {
           onLineWidthChange={changeLineWidth}
         />
       </div>
-      <div>
-        {/* <button
-          type="submit"
-          onClick={notify}
-          // mqttValue={
-          //   mqttValue[EMQTTEvent.RAISE_HAND + id]
-          //     ? mqttValue[EMQTTEvent.RAISE_HAND + id].data.line
-          //     : undefined
-          // }
-        >
-          Raise
-        </button> */}
-        <Toaster position="top-right" reverseOrder={false} />
-      </div>
-      {/* <Kick /> */}
-      <UserList roomId={id}/>
+      <UserList roomId={id} isAdmin={roomInfo.admin === userInfo._id} currentWriter={roomInfo.currentWriter} />
     </div>
   );
 };
