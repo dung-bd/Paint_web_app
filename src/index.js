@@ -84,7 +84,7 @@ const App = () => {
           onLineWidthChange={changeLineWidth}
         />
       </div>
-      <UserList roomId={id} isAdmin={roomInfo.admin === userInfo._id} currentWriter={roomInfo.currentWriter} />
+      <UserList roomId={id} admin={roomInfo.admin} user={userInfo._id} currentWriter={roomInfo.currentWriter} />
     </div>
   );
 };
