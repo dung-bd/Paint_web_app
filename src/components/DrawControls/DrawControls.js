@@ -4,18 +4,18 @@ import { ChromePicker } from "react-color";
 import { clearBoardApi } from "../../utils/request";
 import { toast } from "react-hot-toast";
 
-const DrawControls = props => {
+const DrawControls = (props) => {
   const popover = {
     position: "absolute",
     bottom: "20px",
-    zIndex: "1"
+    zIndex: "1",
   };
   const cover = {
     position: "fixed",
     top: "0px",
     right: "0px",
     bottom: "0px",
-    left: "0px"
+    left: "0px",
   };
 
   const [displayColorPicker, setDisplayColorPicker] = useState(false);

@@ -25,8 +25,6 @@ export const MqttProvider = ({ children }) => {
       setLoading(() => false);
       console.log(err.message);
     });
-
-    return () => client.end();
   }, []);
 
   if (loading) return <React.Fragment />;
