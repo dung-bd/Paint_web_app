@@ -38,25 +38,16 @@ class DrawArea extends React.Component {
     if (this.props.lineWidth !== prevProps.lineWidth) {
       this.context.lineWidth = this.props.lineWidth;
     }
-    if (this.props.mqttValue !== prevProps.mqttValue) {
-      // sync draw
-      {
-        const data = this.props.mqttValue[EMQTTEvent.DRAW + this.props.roomId];
-        if (data && data.from !== this.props.userId) {
-          this.context.strokeStyle = data.lineColor || this.props.lineColor;
-          this.context.lineWidth = data.lineWidth || this.props.lineWidth;
-          this.reDrawCoor(data.line);
-        }
+    if (this.props.draw !== prevProps.draw) {
+      if (this.props.draw && this.props.draw.from !== this.props.userId) {
+        this.context.strokeStyle =
+          this.props.draw.lineColor || this.props.lineColor;
+        this.context.lineWidth =
+          this.props.draw.lineWidth || this.props.lineWidth;
+        this.reDrawCoor(this.props.draw.line);
       }
-
-      // sync allow draw
-      // {
-      //   const data =
-      //     this.props.mqttValue[EMQTTEvent.CHOOSEN + this.props.roomId];
-      //   if (data) {
-      //     this.props.setAllowDraw((val) => [...val, data.userId]);
-      //   }
-      // }
+    }
+    if (this.props.choosen !== prevProps.choosen) {
     }
   }
 
@@ -107,31 +98,33 @@ class DrawArea extends React.Component {
 
       return (e) => {
         this.setCoords(e);
-        this.draw();
         clearTimeout(interval);
-        line.push({
-          prevX: this.prevX,
-          prevY: this.prevY,
-          currX: this.currX,
-          currY: this.currY,
-        });
-
-        if (line.length === 100) {
-          drawCanvas(this.props.roomId, {
-            line,
-            lineWidth: this.props.lineWidth,
-            lineColor: this.props.lineColor,
+        if (this.props.choosen) {
+          this.draw();
+          line.push({
+            prevX: this.prevX,
+            prevY: this.prevY,
+            currX: this.currX,
+            currY: this.currY,
           });
-          line.length = 0;
-        } else {
-          interval = setTimeout(() => {
+
+          if (line.length === 100) {
             drawCanvas(this.props.roomId, {
               line,
               lineWidth: this.props.lineWidth,
               lineColor: this.props.lineColor,
             });
             line.length = 0;
-          }, 500);
+          } else {
+            interval = setTimeout(() => {
+              drawCanvas(this.props.roomId, {
+                line,
+                lineWidth: this.props.lineWidth,
+                lineColor: this.props.lineColor,
+              });
+              line.length = 0;
+            }, 500);
+          }
         }
       };
     };
@@ -189,15 +182,6 @@ class DrawArea extends React.Component {
     ctx.lineTo(this.currX, this.currY);
     ctx.stroke();
     ctx.closePath();
-    // this.props.setPayload((payload) => [
-    //   ...payload,
-    //   {
-    //     prevX: this.prevX,
-    //     prevY: this.prevY,
-    //     currX: this.currX,
-    //     currY: this.currY,
-    //   },
-    // ]);
   }
 
   handleMouseOut = () => {

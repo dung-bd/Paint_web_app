@@ -19,13 +19,13 @@ const App = () => {
   const [canvasHeight, setCanvasHeight] = useState(0);
   const [lineColor, setLineColor] = useState("rgba(144, 145, 154, 1)");
   const [lineWidth, setLineWidth] = useState(4);
-  const [allowDraw, setAllowDraw] = useState([]);
+  // const [allowDraw, setAllowDraw] = useState([]);
 
   const { id } = useParams();
 
   const { userInfo } = useContext(UserContext);
 
-  const mqttValue = useMqtt(id);
+  const { draw, choosen } = useMqtt(id, roomInfo.admin, userInfo._id);
 
   useEffect(() => {
     setDimensions();
@@ -39,7 +39,7 @@ const App = () => {
 
   const getRoomInfo = async () => {
     const { data } = await getRoom(id);
-    setAllowDraw((val) => [...val, data.admin]);
+    // setAllowDraw((val) => [...val, data.admin]);
     setRoomInfo(() => ({ ...data }));
   };
 
@@ -69,9 +69,10 @@ const App = () => {
           height={canvasHeight}
           lineColor={lineColor}
           lineWidth={lineWidth}
-          mqttValue={mqttValue}
-          allowDraw={allowDraw}
-          setAllowDraw={setAllowDraw}
+          draw={draw}
+          choosen={choosen}
+          // allowDraw={allowDraw}
+          // setAllowDraw={setAllowDraw}
           roomId={id}
           userId={userInfo._id}
           onResize={setDimensions}
@@ -84,7 +85,12 @@ const App = () => {
           onLineWidthChange={changeLineWidth}
         />
       </div>
-      <UserList roomId={id} admin={roomInfo.admin} user={userInfo._id} currentWriter={roomInfo.currentWriter} />
+      <UserList
+        roomId={id}
+        admin={roomInfo.admin}
+        user={userInfo._id}
+        currentWriter={roomInfo.currentWriter}
+      />
     </div>
   );
 };
