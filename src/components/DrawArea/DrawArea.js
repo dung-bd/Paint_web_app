@@ -49,7 +49,7 @@ class DrawArea extends React.Component {
           this.reDrawCoor(data.line);
         }
       }
-
+      
       // sync raise hand
 
       // console.log(this.props.mqttValue);

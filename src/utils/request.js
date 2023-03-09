@@ -75,7 +75,8 @@ export const allowUserWrite = (roomId, userId) => {
   return fetch(`${URL}/room/allow-write/${roomId}`, option("POST", { userId })).then((res) => res.json());
 }
 // export const acceptHand = (payload) => axios.post("pick", payload);
-
+export const clearBoardApi = (roomId) =>
+  fetch(`${URL}/room/clear/${roomId}`, option("POST")).then((res) => res.json());
 /* ----- PUT ----- */
 // export const updateRoom = (roomId, payload) => axios.put(`room/${roomId}`, payload);    // ko có body để update room?
 

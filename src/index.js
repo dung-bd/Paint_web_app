@@ -83,6 +83,7 @@ const App = () => {
           onResize={setDimensions}
         />
         <DrawControls
+          roomId={id}
           color={lineColor}
           lineWidth={lineWidth}
           onColorChange={changeLineColor}

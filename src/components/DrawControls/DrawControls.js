@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./DrawControls.css";
 import { ChromePicker } from "react-color";
+import { clearBoardApi } from "../../utils/request";
+import { toast } from "react-hot-toast";
 
 const DrawControls = props => {
   const popover = {
@@ -26,10 +28,18 @@ const DrawControls = props => {
     setDisplayColorPicker(false);
   };
 
-  const clearCanvas = () => {
-    const canvas = document.getElementById("draw-canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const clearCanvas = async () => {
+    // 
+
+    
+    const res=await clearBoardApi(props.roomId)
+    if(res.success===true){
+      // const canvas = document.getElementById("draw-canvas");
+      // const ctx = canvas.getContext("2d");
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }else{
+      toast("not allowed")
+    }
   };
 
   return (
