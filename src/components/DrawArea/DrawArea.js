@@ -45,6 +45,8 @@ class DrawArea extends React.Component {
         this.context.lineWidth =
           this.props.draw.lineWidth || this.props.lineWidth;
         this.reDrawCoor(this.props.draw.line);
+        this.context.strokeStyle=this.props.lineColor;
+        this.context.lineWidth=this.props.lineWidth;
       }
     }
     if (this.props.choosen !== prevProps.choosen) {
