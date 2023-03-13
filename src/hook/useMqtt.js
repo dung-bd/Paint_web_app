@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { MqttContext } from "../context/Mqtt";
 import { EMQTTEvent } from "../utils/constants";
+import { getRoom } from "../utils/request";
 
 export const useMqtt = (roomId, adminId, userId) => {
   const { client } = useContext(MqttContext);
@@ -9,6 +10,8 @@ export const useMqtt = (roomId, adminId, userId) => {
   const [choosen, setChoosen] = useState(false);
 
   useEffect(() => {
+    console.log("13 ---", adminId, userId);
+
     client.subscribe(EMQTTEvent.DRAW + roomId, (err) => {
       if (err) console.error(err);
       else console.log(`Subscribed to ${EMQTTEvent.DRAW + roomId}`);
@@ -23,7 +26,7 @@ export const useMqtt = (roomId, adminId, userId) => {
       else console.log(`Subcribed to ${EMQTTEvent.EMPTY_BOARD + roomId}`);
     });
 
-    client.on("message", (topic, message) => {
+    client.on("message", async (topic, message) => {
       switch (topic) {
         case EMQTTEvent.DRAW + roomId: {
           setDraw((val) => ({
@@ -42,6 +45,7 @@ export const useMqtt = (roomId, adminId, userId) => {
           const res = JSON.parse(message.toString())["data"];
 
           if (adminId !== userId) {
+            console.log("45 ---", adminId, userId);
             if (userId === res.userId) {
               toast("You can draw now");
               setChoosen(() => true);
@@ -50,13 +54,6 @@ export const useMqtt = (roomId, adminId, userId) => {
               setChoosen(() => false);
             }
           }
-          // if (userId === res.userId) {
-          //   setChoosen((choosen) => {
-          //     if (choosen) toast("You are no longer permitted to draw");
-          //     else toast("You can draw now");
-          //     return !choosen;
-          //   });
-          // }
         }
       }
     });

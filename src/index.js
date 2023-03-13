@@ -13,15 +13,30 @@ import { useMqtt } from "./hook/useMqtt";
 
 import "./styles.css";
 
-const App = () => {
+const RoomInfo = () => {
   const [roomInfo, setRoomInfo] = useState({});
+  const { id } = useParams();
+
+  useEffect(() => {
+    getRoomInfo();
+  }, []);
+
+  const getRoomInfo = async () => {
+    const { data } = await getRoom(id);
+    // setAllowDraw((val) => [...val, data.admin]);
+    setRoomInfo(() => ({ ...data }));
+  };
+
+  if (!roomInfo._id) return <React.Fragment />;
+
+  return <App id={id} roomInfo={roomInfo} />;
+};
+
+const App = ({ roomInfo, id }) => {
   const [canvasWidth, setCanvasWidth] = useState(0);
   const [canvasHeight, setCanvasHeight] = useState(0);
   const [lineColor, setLineColor] = useState("rgba(144, 145, 154, 1)");
   const [lineWidth, setLineWidth] = useState(4);
-  // const [allowDraw, setAllowDraw] = useState([]);
-
-  const { id } = useParams();
 
   const { userInfo } = useContext(UserContext);
 
@@ -29,18 +44,11 @@ const App = () => {
 
   useEffect(() => {
     setDimensions();
-    getRoomInfo();
   }, []);
 
   const setDimensions = () => {
     setCanvasWidth(window.innerWidth / 1.2);
     setCanvasHeight(window.innerHeight / 1.4);
-  };
-
-  const getRoomInfo = async () => {
-    const { data } = await getRoom(id);
-    // setAllowDraw((val) => [...val, data.admin]);
-    setRoomInfo(() => ({ ...data }));
   };
 
   useEffect(() => {
@@ -70,7 +78,7 @@ const App = () => {
           lineColor={lineColor}
           lineWidth={lineWidth}
           draw={draw}
-          choosen={choosen}
+          choosen={choosen || roomInfo.admin === userInfo._id}
           // allowDraw={allowDraw}
           // setAllowDraw={setAllowDraw}
           roomId={id}
@@ -95,7 +103,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default RoomInfo;
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<AppRouter />, rootElement);

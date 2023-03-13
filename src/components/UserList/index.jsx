@@ -57,12 +57,12 @@ const UserCard = ({
       <div>
         <p>{name}</p>
       </div>
-      {admin !== _id && (
-        <div className={styles.action}>
-          <button onClick={onKick}>Kick</button>
-          <button onClick={onChoose}>Choose</button>
-        </div>
-      )}
+      {/* {admin !== _id && ( */}
+      <div className={styles.action}>
+        <button onClick={onKick}>Kick</button>
+        <button onClick={onChoose}>Choose</button>
+      </div>
+      {/* )} */}
     </div>
   );
 };
